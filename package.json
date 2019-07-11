@@ -47,7 +47,7 @@
     },
     "rnpm": {
         "android": {
-            "sourceDir": "./android-exoplayer"
+            "sourceDir": "./android"
         }
     },
     "files": [

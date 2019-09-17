@@ -676,9 +676,13 @@ public class ReactVideoView extends ScalableVideoView implements
 
             try {
                 String rawMeta  = new String(data.getMetaData(), "UTF-8");
-                WritableMap id3 = Arguments.createMap();
+                                
+                int indexOfSecondToLast0 = rawMeta.lastIndexOf('\000', rawMeta.length()-2 );
+                // Last character is a 0 by definition
+                String jsonDataString = rawMeta.substring(indexOfSecondToLast0+1, rawMeta.length()-1); // -1, not -2, b/c inclusive
 
-                id3.putString(EVENT_PROP_METADATA_VALUE, rawMeta.substring(rawMeta.lastIndexOf("\u0003") + 1));
+                WritableMap id3 = Arguments.createMap();
+                id3.putString(EVENT_PROP_METADATA_VALUE, jsonDataString);
                 id3.putString(EVENT_PROP_METADATA_IDENTIFIER, "id3/TDEN");
 
                 WritableArray metadata = new WritableNativeArray();
@@ -774,10 +778,10 @@ public class ReactVideoView extends ScalableVideoView implements
         try { // It's possible this could throw an exception if the framework doesn't support getting track info
             MediaPlayer.TrackInfo[] trackInfo = mp.getTrackInfo();
             for (int i = 0; i < trackInfo.length; ++i) {
-                if (trackInfo[i].getTrackType() == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT) {
+                //if (trackInfo[i].getTrackType() == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT) {
                     mp.selectTrack(i);
-                    break;
-                }
+                //    break;
+               // }
             }
         } catch (Exception e) {}
     }

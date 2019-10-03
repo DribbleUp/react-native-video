@@ -684,6 +684,7 @@ public class ReactVideoView extends ScalableVideoView implements
                 WritableMap id3 = Arguments.createMap();
                 id3.putString(EVENT_PROP_METADATA_VALUE, jsonDataString);
                 id3.putString(EVENT_PROP_METADATA_IDENTIFIER, "id3/TDEN");
+                id3.putString("timestamp", Long.toString(data.getTimestamp()));
 
                 WritableArray metadata = new WritableNativeArray();
 

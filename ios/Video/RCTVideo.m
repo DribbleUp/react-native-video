@@ -592,9 +592,10 @@ static int const RCTVideoUnset = -1;
         for (AVMetadataItem *item in items) {
           NSString *value = (NSString *)item.value;
           NSString *identifier = item.identifier;
-          
+          NSString *timestamp = [NSString stringWithFormat:@"%f",  CMTimeGetSeconds(item.time) * 1000000]; 
+
           if (![value isEqual: [NSNull null]]) {
-            NSDictionary *dictionary = [[NSDictionary alloc] initWithObjects:@[value, identifier] forKeys:@[@"value", @"identifier"]];
+            NSDictionary *dictionary = [[NSDictionary alloc] initWithObjects:@[value, timestamp, identifier] forKeys:@[@"value", @"timestamp", @"identifier"]];
             
             [array addObject:dictionary];
           }

@@ -6,6 +6,8 @@
 #include <MediaAccessibility/MediaAccessibility.h>
 #include <AVFoundation/AVFoundation.h>
 
+@import MUXSDKStats;
+
 static NSString *const statusKeyPath = @"status";
 static NSString *const playbackLikelyToKeepUpKeyPath = @"playbackLikelyToKeepUp";
 static NSString *const playbackBufferEmptyKeyPath = @"playbackBufferEmpty";
@@ -342,6 +344,19 @@ static int const RCTVideoUnset = -1;
 - (void)setSrc:(NSDictionary *)source
 {
   _source = source;
+
+  // Environment and player data that persists until the player is destroyed
+  MUXSDKCustomerPlayerData *playerData = [[MUXSDKCustomerPlayerData alloc] initWithEnvironmentKey:@"EXAMPLE_ENV_KEY"];
+  // ...insert player metadata
+
+  // Video metadata (cleared with videoChangeForPlayer:withVideoData:)
+  MUXSDKCustomerVideoData *videoData = [MUXSDKCustomerVideoData new];
+  // ...insert video metadata
+
+  AVPlayerLayer *player = [AVPlayerLayer new];
+  [MUXSDKStats monitorAVPlayerLayer:player withPlayerName:@"awesome" playerData:playerData videoData:videoData];
+
+
   [self removePlayerLayer];
   [self removePlayerTimeObserver];
   [self removePlayerItemObservers];

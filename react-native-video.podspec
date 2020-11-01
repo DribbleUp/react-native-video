@@ -30,6 +30,7 @@ Pod::Spec.new do |s|
   end
 
   s.dependency "React"
+  s.dependency "Mux-Stats-AVPlayer", "~>1.3.0"
 
   s.default_subspec = "Video"
 end

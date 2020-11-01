@@ -241,6 +241,7 @@ export default class Video extends Component {
     const source = resolveAssetSource(this.props.source) || {};
     const shouldCache = !Boolean(source.__packager_asset)
 
+
     let uri = source.uri || '';
     if (uri && uri.match(/^\//)) {
       uri = `file://${uri}`;
@@ -266,12 +267,13 @@ export default class Video extends Component {
       nativeResizeMode = RCTVideoInstance.Constants.ScaleNone;
     }
 
+    const sourceProps = { ... source, uri: uri};
     const nativeProps = Object.assign({}, this.props);
     Object.assign(nativeProps, {
       style: [styles.base, nativeProps.style],
       resizeMode: nativeResizeMode,
       src: {
-        uri,
+        ...sourceProps,
         isNetwork,
         isAsset,
         shouldCache,

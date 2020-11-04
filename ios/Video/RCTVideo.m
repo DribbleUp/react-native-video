@@ -94,7 +94,9 @@ static int const RCTVideoUnset = -1;
   if ((self = [super init])) {
       
 //    NSLog(@"Mux Data Initialized");
-    playerData = [[MUXSDKCustomerPlayerData alloc] initWithEnvironmentKey:@"ulmc60vsr87tslrmgbe3t305o"];
+      NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+      NSString *muxEnvironmentKey = [infoDictionary objectForKey:@"MuxEnvironmentKey"];
+      playerData = [[MUXSDKCustomerPlayerData alloc] initWithEnvironmentKey:muxEnvironmentKey];
     playerData.viewerUserId = @"1234"; // should be user id probably
     videoData = [MUXSDKCustomerVideoData new];
     videoData.videoTitle = @"initial_video_title";

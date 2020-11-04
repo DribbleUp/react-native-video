@@ -26,6 +26,10 @@ static int const RCTVideoUnset = -1;
 
 @implementation RCTVideo
 {
+// Environment and player data that persists until the player is destroyed
+  MUXSDKCustomerPlayerData *playerData;
+  MUXSDKCustomerVideoData *videoData;
+
   AVPlayer *_player;
   AVPlayerItem *_playerItem;
   NSDictionary *_source;
@@ -88,6 +92,13 @@ static int const RCTVideoUnset = -1;
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
 {
   if ((self = [super init])) {
+      
+//    NSLog(@"Mux Data Initialized");
+    playerData = [[MUXSDKCustomerPlayerData alloc] initWithEnvironmentKey:@"ulmc60vsr87tslrmgbe3t305o"];
+    playerData.viewerUserId = @"1234"; // should be user id probably
+    videoData = [MUXSDKCustomerVideoData new];
+    videoData.videoTitle = @"initial_video_title";
+    
     _eventDispatcher = eventDispatcher;
     
     _playbackRateObserverRegistered = NO;
@@ -148,6 +159,7 @@ static int const RCTVideoUnset = -1;
     
     viewController.view.frame = self.bounds;
     viewController.player = player;
+    
     return viewController;
 }
 
@@ -345,16 +357,6 @@ static int const RCTVideoUnset = -1;
 {
   _source = source;
 
-  // Environment and player data that persists until the player is destroyed
-  MUXSDKCustomerPlayerData *playerData = [[MUXSDKCustomerPlayerData alloc] initWithEnvironmentKey:@"EXAMPLE_ENV_KEY"];
-  // ...insert player metadata
-
-  // Video metadata (cleared with videoChangeForPlayer:withVideoData:)
-  MUXSDKCustomerVideoData *videoData = [MUXSDKCustomerVideoData new];
-  // ...insert video metadata
-
-  AVPlayerLayer *player = [AVPlayerLayer new];
-  [MUXSDKStats monitorAVPlayerLayer:player withPlayerName:@"awesome" playerData:playerData videoData:videoData];
 
 
   [self removePlayerLayer];
@@ -1324,6 +1326,17 @@ static int const RCTVideoUnset = -1;
     _playerLayer.frame = self.bounds;
     _playerLayer.needsDisplayOnBoundsChange = YES;
     
+      // Video metadata (cleared with videoChangeForPlayer:withVideoData:)
+//      MUXSDKCustomerVideoData *videoData = [MUXSDKCustomerVideoData new];
+      videoData.videoIsLive = [_source objectForKey:@"isLive"];
+      videoData.videoId = [_source objectForKey:@"videoId"];
+      videoData.videoTitle = [_source objectForKey:@"videoTitle"];
+          
+//      NSLog(@"Mux Video Change for Player %@", videoData.videoTitle);
+      
+//    NSLog(@"Mux Monitor Player Layer %@", videoData.videoTitle);
+    [MUXSDKStats monitorAVPlayerLayer:_playerLayer withPlayerName:@"ios_player" playerData:playerData videoData:videoData];
+      
     // to prevent video from being animated when resizeMode is 'cover'
     // resize mode must be set before layer is added
     [self setResizeMode:_resizeMode];
